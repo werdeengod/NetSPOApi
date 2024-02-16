@@ -1,9 +1,15 @@
 [tool.poetry]
 name = "netspoapi"
-version = "0.1.0"
+version = "1.0.0"
 description = "Парсер сетевого города"
-authors = ["Ownerya <azverev587@gmail.com>"]
+authors = [
+    "Ownerya <azverev587@gmail.com>"
+]
+license = "Private"
 readme = "README.md"
+packages = [
+    {include = "netspoapi"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
