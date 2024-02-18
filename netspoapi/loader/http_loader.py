@@ -68,3 +68,13 @@ class HttpLoader:
 
         return response
 
+    async def attestation(self, target: TargetLogin) -> HttpRequesterData:
+        response = await self._requester(
+            url=BaseUrlJoiner(self.base_url).join(
+                f'services/students/{target.web_user_id}/attestation'
+            ),
+            method=HttpRequesterMethod.get,
+            cookies=target.cookies
+        )
+        return response
+

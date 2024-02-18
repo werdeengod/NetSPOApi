@@ -15,14 +15,6 @@ class TargetLogin:
 
 
 @dataclass
-class DebtLesson:
-    subject: str
-    theme: str
-    marks: list[str, ...]
-    date: str
-
-
-@dataclass
 class Marks:
     subject: str
     marks: list['MarksInfo']
@@ -33,6 +25,13 @@ class MarksInfo:
     markValues: list[str]
     day: 'datetime.datetime' = None
     absenceType: str | None = None
+
+
+@dataclass
+class DebtLesson:
+    subject: str
+    theme: str
+    marks: 'MarksInfo'
 
 
 
