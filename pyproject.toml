@@ -3,7 +3,7 @@ name = "netspoapi"
 version = "1.0.0"
 description = "Парсер сетевого города"
 authors = [
-    "Ownerya <azverev587@gmail.com>"
+    "werdeengod <azverev587@gmail.com>"
 ]
 license = "Private"
 readme = "README.md"
