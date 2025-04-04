@@ -6,4 +6,5 @@ class BaseUrlJoiner:
         self.base_url = base_url
 
     def join(self, path: str):
+        """Присоединение к основному URL пути"""
         return urljoin(self.base_url, path)

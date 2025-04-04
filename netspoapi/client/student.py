@@ -14,6 +14,11 @@ class StudentClient:
         self.student_data = student_data
 
     async def dashboard_marks(self) -> list['Marks']:
+        """Средние баллы по предметам
+
+        Return:
+             Список предметов
+        """
         target_id = self.student_data.student_id
         response = await self._api.make_request(
             url=f'/services/students/{target_id}/dashboard',
@@ -28,6 +33,11 @@ class StudentClient:
         return list_marks
 
     async def performance(self) -> list['Marks']:
+        """Дневник с начала учебного полугодия
+
+        Return:
+             Список предметов с оценками
+        """
         target_id = self.student_data.student_id
         response = await self._api.make_request(
             url=f'/services/reports/current/performance/{target_id}',
@@ -45,28 +55,32 @@ class StudentClient:
 
         return list_marks
 
-    async def debts(
-        self,
-        begin_datetime: 'datetime' = None,
-        end_datetime: 'datetime' = None
-    ) -> list['DebtLesson']:
+    async def debts(self, begin: 'datetime' = None, end: 'datetime' = None) -> list['DebtLesson']:
+        """Студенческие долги
 
+        Args:
+            begin: Optional[datetime]
+            end: Optional[datetime]
+
+        Return:
+            Список долгов
+        """
         target_id = self.student_data.student_id
 
-        if not begin_datetime or not end_datetime:
+        if not begin or not end:
             response = await self._api.make_request(
                 url=f'/services/reports/current/performance/{target_id}',
                 method="get"
             )
 
             date_lessons = [date for month in response['monthsWithDays'] for date in month['daysWithLessons']]
-            begin_datetime, end_datetime = (
+            begin, end = (
                 split_date_from_string(date_lessons[0]),
                 split_date_from_string(date_lessons[-1])
             )
 
         response = await self._api.make_request(
-            url=f'/services/students/{target_id}/lessons/{str(begin_datetime.date())}/{str(end_datetime.date())}',
+            url=f'/services/students/{target_id}/lessons/{str(begin.date())}/{str(end.date())}',
             method="get",
         )
 

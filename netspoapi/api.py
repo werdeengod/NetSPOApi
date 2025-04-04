@@ -21,6 +21,8 @@ class NetSPOApi(BaseClient):
 
     @property
     def student_client(self) -> 'StudentClient':
+        """Методы для работы с API студента"""
+
         if not self._student_client:
             raise APIErrorFactory(403, 'Forbidden')
 
@@ -28,12 +30,23 @@ class NetSPOApi(BaseClient):
 
     @property
     def teacher_client(self) -> 'TeacherClient':
+        """Методы для работы с API учителя"""
+
         if not self._teacher_client:
             raise APIErrorFactory(403, 'Forbidden')
 
         return self._teacher_client
 
     async def login(self, login: str, password: str) -> 'NetSPOApi':
+        """Вход в учетную запись сетевого города
+
+        Args:
+            login: Логин от сетевого города
+            password: Пароль от сетевого города
+
+        Return:
+            Объект NetSPOApi
+        """
         data = {"login": login, "password": password_hash(password)}
 
         response = await self.make_request(

@@ -12,6 +12,7 @@ class BaseClient:
         self.base_url = 'http://spo.cit73.ru'
 
     def _get_session(self) -> 'ClientSession':
+        """Создание единой сессии для request запросов"""
         if isinstance(self._session, ClientSession) and not self._session.closed:
             return self._session
 
@@ -26,6 +27,7 @@ class BaseClient:
         return self._session
 
     async def make_request(self, url: str, method: str, **kwargs) -> dict:
+        """Создание request запроса"""
         url = BaseUrlJoiner(self.base_url).join(url)
         session = self._get_session()
 
@@ -42,6 +44,7 @@ class BaseClient:
         return response
 
     async def close(self) -> None:
+        """Закрытие единой сессии"""
         if not isinstance(self._session, ClientSession):
             return
 
