@@ -20,7 +20,7 @@ class BaseClient:
 
         return self._session
 
-    async def _make_request(self, url: str, method: str, **kwargs) -> dict:
+    async def make_request(self, url: str, method: str, **kwargs) -> dict:
         url = BaseUrlJoiner(self.base_url).join(url)
         session = self.get_session()
 
