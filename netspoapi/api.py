@@ -7,8 +7,8 @@ from netspoapi.utils import password_hash
 
 
 class NetSPOApi(BaseClient):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, user_agent: str = None):
+        super().__init__(user_agent=user_agent)
 
         self._student_client = None
         self._teacher_client = None

@@ -6,15 +6,20 @@ from netspoapi.utils import BaseUrlJoiner
 
 
 class BaseClient:
-    def __init__(self):
+    def __init__(self, user_agent: str | None):
+        self._user_agent = user_agent
         self._session: Optional[ClientSession] = None
         self.base_url = 'http://spo.cit73.ru'
 
-    def get_session(self):
+    def _get_session(self) -> 'ClientSession':
         if isinstance(self._session, ClientSession) and not self._session.closed:
             return self._session
 
         self._session = ClientSession()
+
+        if self._user_agent:
+            self._session.headers.add('User-Agent', self._user_agent)
+
         self._session.headers.add('Accept', 'application/json')
         self._session.headers.add('Content-Type', 'application/json')
 
@@ -22,7 +27,7 @@ class BaseClient:
 
     async def make_request(self, url: str, method: str, **kwargs) -> dict:
         url = BaseUrlJoiner(self.base_url).join(url)
-        session = self.get_session()
+        session = self._get_session()
 
         try:
             async with session.request(method, url, **kwargs) as response:
@@ -36,7 +41,7 @@ class BaseClient:
 
         return response
 
-    async def close(self):
+    async def close(self) -> None:
         if not isinstance(self._session, ClientSession):
             return
 

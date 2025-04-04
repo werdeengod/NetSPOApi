@@ -9,10 +9,10 @@ async def from_context():
 
 
 async def default():
-    api2 = NetSPOApi()
+    api = NetSPOApi()
 
-    await api2.login('зверев27', 'd7f0e794')
-    print(await api2.student_client.dashboard_marks())
+    await api.login('зверев27', 'd7f0e794')
+    print(await api.student_client.dashboard_marks())
 
 
 asyncio.run(default())
