@@ -1,4 +1,6 @@
 from datetime import datetime
+import hashlib
+import base64
 
 
 def split_date_from_string(date: str) -> datetime:
@@ -19,3 +21,10 @@ def get_legit_type_tasks() -> list:
         'Self'
     ]
     return legit_type
+
+
+def password_hash(password: str) -> str:
+    sha256 = hashlib.sha256(password.encode('utf-8')).digest()
+    password = base64.b64encode(sha256).decode()
+
+    return password

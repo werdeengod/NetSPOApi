@@ -1,17 +1,8 @@
-from typing import Optional, TYPE_CHECKING, Union
-from dataclasses import dataclass
-
+from typing import Optional
 from aiohttp import ClientSession
+
+from netspoapi.exceptions import APIErrorFactory
 from netspoapi.utils import BaseUrlJoiner
-
-if TYPE_CHECKING:
-    from http.cookies import SimpleCookie
-
-
-@dataclass(frozen=True)
-class HttpRequesterData:
-    json: dict
-    cookies: 'SimpleCookie'
 
 
 class BaseClient:
@@ -29,25 +20,21 @@ class BaseClient:
 
         return self._session
 
-    async def _make_request(self, url: str, method: str, **kwargs) -> 'HttpRequesterData':
+    async def _make_request(self, url: str, method: str, **kwargs) -> dict:
         url = BaseUrlJoiner(self.base_url).join(url)
         session = self.get_session()
 
-        async with session.request(method, url, **kwargs) as response:
-            response_json = await response.json()
-            cookies = response.cookies
+        try:
+            async with session.request(method, url, **kwargs) as response:
+                if response.status >= 400:
+                    raise APIErrorFactory(response.status, response.reason)
 
-        if self._validate_response(response_json) is False:
-            raise
+                response = await response.json()
 
-        return HttpRequesterData(
-            json=response_json,
-            cookies=cookies
-        )
+        except Exception as e:
+            raise APIErrorFactory(name=e)
 
-    @staticmethod
-    def _validate_response(response: Union[dict, list]) -> bool:
-        return False if isinstance(response, dict) and response.get('error') else True
+        return response
 
     async def close(self):
         if not isinstance(self._session, ClientSession):

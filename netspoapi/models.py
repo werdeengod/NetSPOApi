@@ -4,8 +4,15 @@ import datetime
 
 
 class StudentData(BaseModel):
+    student_id: int
     student_name: str
     group_name: str
+    college_name: str
+
+
+class TeacherData(BaseModel):
+    teacher_id: int
+    teacher_name: str
     college_name: str
 
 
