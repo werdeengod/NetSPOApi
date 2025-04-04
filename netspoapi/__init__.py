@@ -1,1 +1,1 @@
-from .netspoapi import NetSPOApi
+from .api import NetSPOApi
