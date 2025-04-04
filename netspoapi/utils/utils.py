@@ -1,8 +1,4 @@
-from typing import TYPE_CHECKING
 from datetime import datetime
-
-if TYPE_CHECKING:
-    from netspoapi.requester import HttpRequesterData
 
 
 def split_date_from_string(date: str) -> datetime:
