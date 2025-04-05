@@ -14,7 +14,7 @@ def split_date_from_string(date: str) -> datetime:
 
     """
     date_string = date.split('T')[0]
-    return datetime.strptime(date_string, "%Y-%m-%d")
+    return datetime.strptime(date_string, "%Y-%m-%d").date()
 
 
 def get_legit_type_tasks() -> list:
@@ -32,7 +32,8 @@ def get_legit_type_tasks() -> list:
         'Independent',
         'Slice',
         'Lesson',
-        'Self'
+        'Self',
+        'PracticalTraining'
     ]
     return legit_type
 
@@ -51,3 +52,8 @@ def password_hash(password: str) -> str:
     password = base64.b64encode(sha256).decode()
 
     return password
+
+
+def get_fullname_client(client: dict) -> str:
+    keys = ('lastName', 'firstName', 'middleName')
+    return " ".join([client[key] for key in keys]).strip()

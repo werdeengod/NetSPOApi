@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from aiohttp import ClientSession
 
 from netspoapi.exceptions import APIErrorFactory
@@ -6,10 +6,10 @@ from netspoapi.utils import BaseUrlJoiner
 
 
 class BaseClient:
-    def __init__(self, user_agent: str | None):
+    def __init__(self, user_agent: Union[str, None], base_url: Union[str, None]):
         self._user_agent = user_agent
         self._session: Optional[ClientSession] = None
-        self.base_url = 'http://spo.cit73.ru'
+        self.base_url = base_url
 
     def _get_session(self) -> 'ClientSession':
         """Создание единой сессии для request запросов"""
@@ -39,7 +39,7 @@ class BaseClient:
                 response = await response.json()
 
         except Exception as e:
-            raise APIErrorFactory(name=e)
+            raise APIErrorFactory(400, e)
 
         return response
 

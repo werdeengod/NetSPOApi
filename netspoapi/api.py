@@ -3,18 +3,21 @@ import json
 from netspoapi.exceptions import APIErrorFactory
 from netspoapi.client import BaseClient, StudentClient, TeacherClient
 from netspoapi.models import StudentData, TeacherData
-from netspoapi.utils import password_hash
+from netspoapi.utils import password_hash, get_fullname_client
 
 
 class NetSPOApi(BaseClient):
-    def __init__(self, user_agent: str = None):
-        super().__init__(user_agent=user_agent)
+    def __init__(self, login: str, password: str, *, base_url: str, user_agent: str = None):
+        super().__init__(user_agent=user_agent, base_url=base_url)
+
+        self._login = login
+        self._password = password_hash(password)
 
         self._student_client = None
         self._teacher_client = None
 
     async def __aenter__(self) -> 'NetSPOApi':
-        return self
+        return await self.login()
 
     async def __aexit__(self, exc_type, exc, tb) -> None:
         await self.close()
@@ -37,17 +40,13 @@ class NetSPOApi(BaseClient):
 
         return self._teacher_client
 
-    async def login(self, login: str, password: str) -> 'NetSPOApi':
+    async def login(self) -> 'NetSPOApi':
         """Вход в учетную запись сетевого города
-
-        Args:
-            login: Логин от сетевого города
-            password: Пароль от сетевого города
 
         Return:
             Объект NetSPOApi
         """
-        data = {"login": login, "password": password_hash(password)}
+        data = {"login": self._login, "password": self._password}
 
         response = await self.make_request(
             url='/services/security/login',
@@ -59,7 +58,7 @@ class NetSPOApi(BaseClient):
 
         if response['tenants']['spo_30'].get('studentRole'):
             students = response['tenants']['spo_30']['studentRole']['students'][0]
-            student_name = " ".join([students[key] for key in ('lastName', 'firstName', 'middleName')]).strip()
+            student_name = get_fullname_client(students)
 
             self._student_client = StudentClient(
                 api=self,
