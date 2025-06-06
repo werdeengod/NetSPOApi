@@ -24,7 +24,7 @@ from netspoapi import NetSPOApi
 async def main():
     url = 'https://spo.cit73.ru'
 
-    api = await NetSPOApi('зверев27', '11111', base_url=url).login()
+    api = await NetSPOApi('login', 'password', base_url=url).login()
     data = await api.student_client.dashboard()
     print(data)
 ```
